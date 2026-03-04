@@ -1,0 +1,41 @@
+services:
+  api:
+    build: ./shaverma-cloud
+    container_name: shaverma-api
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+      - AUTH_JWK_SET_URI=http://auth:9000/oauth2/jwks
+    networks: [shnet]
+
+  auth:
+    build: ./auth_server
+    container_name: shaverma-auth
+    ports:
+      - "9000:9000"
+    environment:
+      - SERVER_PORT=9000
+    networks: [shnet]
+
+  client:
+    build: ./taco_cloud_client
+    container_name: shaverma-client
+    ports:
+      - "9090:9090"
+    environment:
+      - SERVER_PORT=9090
+      - API_BASE_URL=http://api:8080
+      - AUTH_AUTHORIZATION_URI=http://localhost:9000/oauth2/authorize
+      - AUTH_TOKEN_URI=http://auth:9000/oauth2/token
+      - AUTH_JWK_SET_URI=http://auth:9000/oauth2/jwks
+
+
+
+    depends_on:
+      - api
+      - auth
+    networks: [shnet]
+
+networks:
+  shnet:

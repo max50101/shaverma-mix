@@ -2,6 +2,7 @@ package com.example.taco_cloud_client.config;
 
 import com.example.taco_cloud_client.service.IngredientService;
 import com.example.taco_cloud_client.service.impl.RestIngredientService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -29,7 +30,7 @@ public class ClientConfig {
 
     @Bean
     @RequestScope
-    public IngredientService ingredientService(OAuth2AuthorizedClientService clientService) {
+    public IngredientService ingredientService(OAuth2AuthorizedClientService clientService, @Value("${api.base-url}") String apiBaseUrl) {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
         String accessToken = null;
@@ -41,6 +42,6 @@ public class ClientConfig {
                 accessToken = client.getAccessToken().getTokenValue();
             }
         }
-        return new RestIngredientService(accessToken);
+        return new RestIngredientService(accessToken,apiBaseUrl);
     }
 }

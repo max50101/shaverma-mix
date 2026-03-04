@@ -19,7 +19,7 @@ public class SequrityConfig {
     @Order(2)
     SecurityFilterChain defaultSequrityFilterChain(HttpSecurity httpSecurity) throws Exception{
         return httpSecurity.authorizeHttpRequests(auth-> auth
-                        .requestMatchers("/login", "/css/**", "/js/**", "/images/**")
+                        .requestMatchers("/login", "/css/**", "/js/**", "/images/**",  "/.well-known/**")
                         .permitAll()
                         .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())

@@ -13,8 +13,10 @@ import java.util.Arrays;
 
 public class RestIngredientService implements IngredientService {
     private RestTemplate rest;
-    public RestIngredientService(String accessTocken){
+    private String apiBaseUrl;
+    public RestIngredientService(String accessTocken, String apiBaseUrl){
         this.rest=new RestTemplate();
+        this.apiBaseUrl=apiBaseUrl;
         if(accessTocken!=null){
             this.rest.getInterceptors().add(getBearerTokenInterceptor(accessTocken));
         }
@@ -39,14 +41,14 @@ public class RestIngredientService implements IngredientService {
     @Override
     public Iterable<Ingredient> findAll() {
         return Arrays.asList(
-                rest.getForObject("http://localhost:8080/api/v1/ingredients",Ingredient[].class)
+                rest.getForObject(apiBaseUrl + "/api/v1/ingredients", Ingredient[].class)
         );
     }
 
     @Override
     public Ingredient addIngredient(Ingredient ingredient) {
          return rest.postForObject(
-                "http://localhost:8080/api/ingredients",
+                 apiBaseUrl + "/api/ingredients",
                 ingredient,
                 Ingredient.class);
     }

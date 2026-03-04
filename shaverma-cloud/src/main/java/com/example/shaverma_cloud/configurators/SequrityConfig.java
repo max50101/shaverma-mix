@@ -1,0 +1,65 @@
+package com.example.shaverma_cloud.configurators;
+
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
+import static org.springframework.security.config.Customizer.withDefaults;
+
+@Configuration
+public class SequrityConfig {
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    @Order(1)
+    public SecurityFilterChain apiChain(HttpSecurity http) throws Exception {
+        return http
+                .securityMatcher("/api/**")
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST,"api/ingredients")
+                        .hasAuthority("SCOPE_writeIngredients")
+                        .requestMatchers(HttpMethod.DELETE,"api/ingredients")
+                        .hasAuthority("SCOPE_deleteIngredients")
+                        .anyRequest().permitAll() // или authenticated(), если API надо защищать
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(withDefaults())
+                )
+                .formLogin(form -> form.disable()) // <- ключевое: без редиректа на /login
+                .httpBasic(withDefaults())         // удобно для curl, если включишь authenticated()
+                .build();
+    }
+
+    @Bean
+    @Order(2)
+    public SecurityFilterChain webChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        .requestMatchers("/", "/login", "/register").permitAll()
+                        .requestMatchers("/design", "/orders").hasRole("USER")
+                        .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/design", true)
+                        .permitAll()
+                )
+                .build();
+    }
+}

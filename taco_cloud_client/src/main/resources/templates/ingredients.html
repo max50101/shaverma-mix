@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Ингредиенты</title>
+    <style>
+    body { font-family: sans-serif; max-width: 760px; margin: 24px auto; }
+    .card { border: 1px solid #ddd; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+    label { display:block; margin: 8px 0 4px; }
+    input, select, button { padding: 8px; }
+    ul { padding-left: 18px; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Ингредиенты</h2>
+
+    <!-- Кнопка "Получить ингредиенты" -->
+    <form th:action="@{/ingredients}" method="get">
+        <button type="submit">Получить ингредиенты</button>
+    </form>
+
+    <div th:if="${ingredients != null}">
+        <h3>Список</h3>
+        <ul>
+            <li th:each="ing : ${ingredients}">
+                <b th:text="${ing.id}">ID</b> —
+                <span th:text="${ing.name}">Name</span>
+                (<i th:text="${ing.type}">Type</i>)
+            </li>
+        </ul>
+
+        <p th:if="${#lists.isEmpty(ingredients)}">Список пуст.</p>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Создать ингредиент</h2>
+
+    <form th:action="@{/ingredients}" method="post" th:object="${ingredientForm}">
+        <label for="id">ID</label>
+        <input id="id" type="text" th:field="*{id}" placeholder="Напр. FLTO" required />
+
+        <label for="name">Название</label>
+        <input id="name" type="text" th:field="*{name}" placeholder="Напр. Flour Tortilla" required />
+
+        <label for="type">Тип</label>
+        <select id="type" th:field="*{type}" required>
+            <option value="" disabled selected>Выбери тип</option>
+            <option th:each="t : ${types}" th:value="${t}" th:text="${t}"></option>
+        </select>
+
+        <div style="margin-top:12px;">
+            <button type="submit">Отправить</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

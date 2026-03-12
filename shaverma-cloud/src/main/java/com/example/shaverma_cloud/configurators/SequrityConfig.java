@@ -22,7 +22,6 @@ public class SequrityConfig {
     }
 
     @Bean
-    @Order(1)
     public SecurityFilterChain apiChain(HttpSecurity http) throws Exception {
         return http
                 .securityMatcher("/api/**")
@@ -33,7 +32,12 @@ public class SequrityConfig {
                         .hasAuthority("SCOPE_writeIngredients")
                         .requestMatchers(HttpMethod.DELETE,"api/ingredients")
                         .hasAuthority("SCOPE_deleteIngredients")
-                        .anyRequest().permitAll() // или authenticated(), если API надо защищать
+                        .requestMatchers(HttpMethod.POST,"api/v1/orders")
+                        .hasAuthority("SCOPE_writeOrders")
+                         .requestMatchers(HttpMethod.DELETE,"api/v1/orders")
+                         .hasAuthority("SCOPE_deleteOrders")
+                        .anyRequest().permitAll() // или authent
+                                    // icated(), если API надо защищать
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(withDefaults())
@@ -43,23 +47,5 @@ public class SequrityConfig {
                 .build();
     }
 
-    @Bean
-    @Order(2)
-    public SecurityFilterChain webChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/", "/login", "/register").permitAll()
-                        .requestMatchers("/design", "/orders").hasRole("USER")
-                        .anyRequest().authenticated()
-                )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/design", true)
-                        .permitAll()
-                )
-                .build();
+
     }
-}

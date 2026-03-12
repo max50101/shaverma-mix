@@ -72,6 +72,8 @@ public class AutherizationServerConfig{
                                 "http://127.0.0.1:9090/login/oauth2/code/taco-admin-client")
                         .scope("writeIngredients")
                         .scope("deleteIngredients")
+                        .scope("writeOrders")
+                        .scope("deleteOrders")
                         .scope(OidcScopes.OPENID)
                         .clientSettings(
                                 ClientSettings.builder()

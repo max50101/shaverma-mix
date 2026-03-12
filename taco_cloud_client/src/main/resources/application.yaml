@@ -14,6 +14,8 @@ spring:
             scope:
               - writeIngredients
               - deleteIngredients
+              - writeOrders
+              - deleteOrders
               - openid
 
         provider:

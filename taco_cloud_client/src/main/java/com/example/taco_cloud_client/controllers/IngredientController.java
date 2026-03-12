@@ -1,7 +1,7 @@
 package com.example.taco_cloud_client.controllers;
 
 import com.example.taco_cloud_client.model.Ingredient;
-import com.example.taco_cloud_client.service.IngredientService;
+import com.example.taco_cloud_client.repository.IngredientRepository;
 import lombok.Data;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,15 +17,15 @@ import java.util.stream.StreamSupport;
 @Controller
 @RequestMapping("/")
 public class IngredientController {
-    private IngredientService ingredientService;
-    public IngredientController(IngredientService ingredientService){
-        this.ingredientService=ingredientService;
+    private IngredientRepository ingredientRepository;
+    public IngredientController(IngredientRepository ingredientRepository){
+        this.ingredientRepository = ingredientRepository;
     }
 
     @GetMapping
     public String getIngredients(Model model){
         List<Ingredient> ingredients = StreamSupport
-                .stream(ingredientService.findAll().spliterator(),false)
+                .stream(ingredientRepository.findAll().spliterator(),false)
                 .collect(Collectors.toList());
 
         model.addAttribute("ingredients", ingredients);
@@ -39,7 +39,7 @@ public class IngredientController {
     @PostMapping
     public String createIngredient(@ModelAttribute("ingredientForm") IngredientForm form) {
         Ingredient ingredient = new Ingredient(form.getId(), form.getName(), form.getType());
-        ingredientService.addIngredient(ingredient);
+        ingredientRepository.addIngredient(ingredient);
         return "redirect:/ingredients";
     }
 

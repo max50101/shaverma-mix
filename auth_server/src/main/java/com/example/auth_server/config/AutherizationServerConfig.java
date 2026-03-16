@@ -39,25 +39,41 @@ public class AutherizationServerConfig{
     @Bean
     @Order(1)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
-
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-                .oidc(withDefaults());
+                .oidc(Customizer.withDefaults());
+
         var endpointsMatcher = http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .getEndpointsMatcher();
 
-        // 4) CSRF игнорим только для endpoints authorization server
-        http.securityMatcher(endpointsMatcher)
-                .exceptionHandling(ex->ex
+        http
+                .securityMatcher(endpointsMatcher)
+                .exceptionHandling(ex -> ex
                         .defaultAuthenticationEntryPointFor(
-                                new LoginUrlAuthenticationEntryPoint("/login")
-                        ,new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
+                                new LoginUrlAuthenticationEntryPoint("/login"),
+                                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
+                        )
+                )
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher));
 
         return http.build();
     }
+
     @Bean
-    public RegisteredClientRepository registeredClientRepository(
+    @Order(2)
+    public SecurityFilterChain appSecurityFilterChain(HttpSecurity http) throws Exception {
+            http.authorizeHttpRequests(auth->auth.
+                            requestMatchers("/login","/register","/error", "/images/**",
+                                    "/css/**",
+                                    "/js/**").permitAll()
+                    .anyRequest().authenticated())
+                    .formLogin(form->form.loginPage("/login").permitAll());
+            return http.build();
+    }
+
+@Bean
+public RegisteredClientRepository registeredClientRepository(
             PasswordEncoder passwordEncoder) {
         RegisteredClient registeredClient =
                 RegisteredClient.withId(UUID.randomUUID().toString())

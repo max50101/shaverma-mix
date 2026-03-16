@@ -1,12 +1,18 @@
 services:
   api:
-    build: ./shaverma-cloud
+    build:
+      context: .
+      dockerfile: shaverma-cloud/Dockerfile
     container_name: shaverma-api
     ports:
       - "8080:8080"
     environment:
       - SERVER_PORT=8080
       - AUTH_JWK_SET_URI=http://auth:9000/oauth2/jwks
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
     networks: [shnet]
   rabbitmq:
     image: rabbitmq:3-management
@@ -17,13 +23,20 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    networks: [shnet]
   auth:
-    build: ./auth_server
+    build:
+      context: .
+      dockerfile: auth_server/Dockerfile
     container_name: shaverma-auth
     ports:
       - "9000:9000"
     environment:
       - SERVER_PORT=9000
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
     networks: [shnet]
 
   client:
@@ -37,7 +50,6 @@ services:
       - AUTH_AUTHORIZATION_URI=http://localhost:9000/oauth2/authorize
       - AUTH_TOKEN_URI=http://auth:9000/oauth2/token
       - AUTH_JWK_SET_URI=http://auth:9000/oauth2/jwks
-
 
 
     depends_on:

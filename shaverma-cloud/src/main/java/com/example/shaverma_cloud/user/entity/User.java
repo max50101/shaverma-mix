@@ -20,7 +20,6 @@ public class User implements UserDetails {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // NOT final
 
     @Column(unique = true, nullable = false)
@@ -36,7 +35,13 @@ public class User implements UserDetails {
     private String zip;
     private String phoneNumber;
 
-    // удобный конструктор для создания нового пользователя (без id)
+    public User(Long id,String username){
+        this.id=id;
+        this.username=username;
+    }
+    public User(){
+
+    }
     public User(String username, String password, String fullname,
                 String street, String city, String state, String zip, String phoneNumber) {
         this.username = username;

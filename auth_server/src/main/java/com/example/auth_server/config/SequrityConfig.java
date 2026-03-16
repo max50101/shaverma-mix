@@ -15,16 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SequrityConfig {
-    @Bean
-    @Order(2)
-    SecurityFilterChain defaultSequrityFilterChain(HttpSecurity httpSecurity) throws Exception{
-        return httpSecurity.authorizeHttpRequests(auth-> auth
-                        .requestMatchers("/login", "/css/**", "/js/**", "/images/**",  "/.well-known/**")
-                        .permitAll()
-                        .anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults())
-                .build();
-    }
+
     @Bean
     UserDetailsService userDetailsService(UserRepository userRepository){
         return username -> userRepository.findByUsername(username).orElseThrow(() ->

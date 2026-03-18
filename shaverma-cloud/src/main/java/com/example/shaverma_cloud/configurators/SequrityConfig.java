@@ -36,6 +36,7 @@ public class SequrityConfig {
                         .hasAuthority("SCOPE_writeOrders")
                          .requestMatchers(HttpMethod.DELETE,"api/v1/orders")
                          .hasAuthority("SCOPE_deleteOrders")
+                                .requestMatchers(HttpMethod.GET,"api/v1/users").hasAuthority("SCOPE_getUsers")
                         .anyRequest().permitAll() // или authent
                                     // icated(), если API надо защищать
                 )

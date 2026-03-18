@@ -3,21 +3,17 @@ WORKDIR /app
 
 # ---------- common-events ----------
 COPY common-events/pom.xml /app/common-events/pom.xml
+RUN mvn -f /app/common-events/pom.xml -B -DskipTests dependency:go-offline
+
+COPY common-events/src /app/common-events/src
+RUN mvn -f /app/common-events/pom.xml -B -DskipTests clean install
 
 # ---------- auth ----------
 COPY auth_server/pom.xml /app/auth_server/pom.xml
+RUN mvn -f /app/auth_server/pom.xml -B -DskipTests dependency:go-offline
 
-# Скачать зависимости заранее (кешируется)
-RUN mvn -f /app/common-events/pom.xml -B -q -DskipTests dependency:go-offline
-RUN mvn -f /app/auth_server/pom.xml -B -q -DskipTests dependency:go-offline
-
-# ---------- теперь копируем src ----------
-COPY common-events/src /app/common-events/src
 COPY auth_server/src /app/auth_server/src
-
-# ---------- билд ----------
-RUN mvn -f /app/common-events/pom.xml -DskipTests install
-RUN mvn -f /app/auth_server/pom.xml -DskipTests package
+RUN mvn -f /app/auth_server/pom.xml -B -DskipTests clean package
 
 FROM eclipse-temurin:17-jre
 WORKDIR /app

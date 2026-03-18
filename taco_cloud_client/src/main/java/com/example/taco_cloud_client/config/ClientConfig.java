@@ -3,8 +3,10 @@ package com.example.taco_cloud_client.config;
 import com.example.taco_cloud_client.component.RestTemplateFactory;
 import com.example.taco_cloud_client.repository.IngredientRepository;
 import com.example.taco_cloud_client.repository.OrderRepository;
+import com.example.taco_cloud_client.repository.UserRepository;
 import com.example.taco_cloud_client.repository.impl.RestIngredientRepository;
 import com.example.taco_cloud_client.repository.impl.RestOrderRepository;
+import com.example.taco_cloud_client.repository.impl.RestUserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -56,6 +58,12 @@ public class ClientConfig {
     public OrderRepository orderService(RestTemplateFactory restTemplateFactory,
                                         @Value("${api.base-url}") String apiBaseUrl) {
         return new RestOrderRepository(restTemplateFactory.create(),apiBaseUrl);
+    }
+
+    @Bean
+    @RequestScope
+    public UserRepository userService(RestTemplateFactory restTemplateFactory, @Value("${api.base-url}") String apiBaseUrl){
+        return new RestUserRepository(restTemplateFactory.create(),apiBaseUrl);
     }
 
 

@@ -13,7 +13,7 @@ public class RabbitConfig {
 
     public static final String ORDER_QUEUE = "users.created.queue";
     public static final String ORDER_EXCHANGE = "users.exchange";
-    public static final String ORDER_ROUTING_KEY = "users.сreated";
+    public static final String ORDER_ROUTING_KEY = "users.created";
 
     @Bean
     public Queue orderQueue() {

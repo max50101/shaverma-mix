@@ -1,6 +1,6 @@
-package com.example.shaverma_cloud.user.repository;
+package com.example.shaverma_cloud.repository;
 
-import com.example.shaverma_cloud.user.entity.User;
+import com.example.shaverma_cloud.model.User;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;

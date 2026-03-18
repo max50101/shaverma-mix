@@ -8,6 +8,8 @@ public class UserCreatedEvent {
         this.userId=userId;
         this.username=username;
     }
+    public UserCreatedEvent() {
+    }
 
     public Long getUserId() {
         return userId;

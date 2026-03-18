@@ -1,12 +1,8 @@
 package com.example.shaverma_cloud.model;
 
-import com.example.shaverma_cloud.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import lombok.Data;
-import org.hibernate.validator.constraints.CreditCardNumber;
 
 
 import java.io.Serializable;

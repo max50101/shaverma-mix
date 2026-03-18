@@ -25,6 +25,7 @@ public class DesignShavermaController {
 
     private final IngredientRepository ingredientRepo;
 
+
     @Autowired
     public DesignShavermaController(IngredientRepository ingredientRepo) {
         this.ingredientRepo = ingredientRepo;

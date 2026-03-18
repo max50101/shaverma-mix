@@ -16,6 +16,7 @@ spring:
               - deleteIngredients
               - writeOrders
               - deleteOrders
+              - getUsers
               - openid
 
         provider:

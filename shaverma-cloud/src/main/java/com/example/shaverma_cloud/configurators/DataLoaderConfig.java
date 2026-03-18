@@ -4,7 +4,7 @@ import com.example.shaverma_cloud.model.Ingredient;
 import com.example.shaverma_cloud.model.Shaverma;
 import com.example.shaverma_cloud.repository.IngredientRepository;
 import com.example.shaverma_cloud.repository.ShavermaRepository;
-import com.example.shaverma_cloud.user.repository.UserRepository;
+import com.example.shaverma_cloud.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
-import java.util.List;
 
 @Profile("!test")
 @Configuration

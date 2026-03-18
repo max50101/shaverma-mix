@@ -90,6 +90,7 @@ public RegisteredClientRepository registeredClientRepository(
                         .scope("deleteIngredients")
                         .scope("writeOrders")
                         .scope("deleteOrders")
+                        .scope("getUsers")
                         .scope(OidcScopes.OPENID)
                         .clientSettings(
                                 ClientSettings.builder()
